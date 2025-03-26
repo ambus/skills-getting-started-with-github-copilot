@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const activitySelect = document.getElementById("activity");
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
+  const participantInfoContainer = document.getElementById("participant-info-container");
+  const participantInfo = document.getElementById("participant-info");
 
   // Function to fetch activities from API
   async function fetchActivities() {
@@ -45,6 +47,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Function to display participant information
+  function displayParticipants(activity) {
+    const selectedActivity = activities[activity];
+    if (selectedActivity) {
+      participantInfo.innerHTML = `
+        <h4>${activity}</h4>
+        <ul>
+          ${selectedActivity.participants.map(participant => `<li>${participant}</li>`).join('')}
+        </ul>
+      `;
+    } else {
+      participantInfo.innerHTML = "<p>No participants found for this activity.</p>";
+    }
+  }
+
   // Handle form submission
   signupForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -83,6 +100,12 @@ document.addEventListener("DOMContentLoaded", () => {
       messageDiv.classList.remove("hidden");
       console.error("Error signing up:", error);
     }
+  });
+
+  // Event listener for activity selection
+  activitySelect.addEventListener("change", (event) => {
+    const selectedActivity = event.target.value;
+    displayParticipants(selectedActivity);
   });
 
   // Initialize app
