@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const activitySelect = document.getElementById("activity");
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
+  const participantInfoContainer = document.getElementById("participant-info-container");
+  const participantInfo = document.getElementById("participant-info");
 
   // Function to fetch activities from API
   async function fetchActivities() {
@@ -25,6 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
           <p>${details.description}</p>
           <p><strong>Schedule:</strong> ${details.schedule}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
+          <h5>Participants:</h5>
+          <ul>
+            ${details.participants.map(participant => `<li>${participant}</li>`).join('')}
+          </ul>
         `;
 
         activitiesList.appendChild(activityCard);
@@ -38,6 +44,21 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
       console.error("Error fetching activities:", error);
+    }
+  }
+
+  // Function to display participant information
+  function displayParticipants(activity) {
+    const selectedActivity = activities[activity];
+    if (selectedActivity) {
+      participantInfo.innerHTML = `
+        <h4>${activity}</h4>
+        <ul>
+          ${selectedActivity.participants.map(participant => `<li>${participant}</li>`).join('')}
+        </ul>
+      `;
+    } else {
+      participantInfo.innerHTML = "<p>No participants found for this activity.</p>";
     }
   }
 
@@ -79,6 +100,12 @@ document.addEventListener("DOMContentLoaded", () => {
       messageDiv.classList.remove("hidden");
       console.error("Error signing up:", error);
     }
+  });
+
+  // Event listener for activity selection
+  activitySelect.addEventListener("change", (event) => {
+    const selectedActivity = event.target.value;
+    displayParticipants(selectedActivity);
   });
 
   // Initialize app
